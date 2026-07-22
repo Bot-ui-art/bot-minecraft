@@ -21,9 +21,8 @@ def run_http_server():
 threading.Thread(target=run_http_server, daemon=True).start()
 
 # --- CONFIGURAZIONE DISCORD ---
-TOKEN = 'IL_TUO_TOKEN_QUI'
-CHANNEL_ID = 123456789012345678  # Sostituisci con l'ID del canale reale
-
+TOKEN = 'MTUyOTQ4ODYyMDcxOTk2NDMxMQ.GDOrQt.mEpOdDCxrHnckDXKRjQMxXzza4jfywwQXx92ek'
+CHANNEL_ID = 1529463418745258145
 intents = discord.Intents.default()
 intents.message_content = True
 bot = commands.Bot(command_prefix="!", intents=intents)
