@@ -21,7 +21,7 @@ def run_http_server():
 threading.Thread(target=run_http_server, daemon=True).start()
 
 # --- CONFIGURAZIONE DISCORD ---
-TOKEN = 'MTUyOTQ4ODYyMDcxOTk2NDMxMQ.GDOrQt.mEpOdDCxrHnckDXKRjQMxXzza4jfywwQXx92ek'
+TOKEN = TOKEN = os.environ.get("DISCORD_TOKEN")
 CHANNEL_ID = 1529463418745258145
 intents = discord.Intents.default()
 intents.message_content = True
