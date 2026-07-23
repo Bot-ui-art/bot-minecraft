@@ -36,7 +36,7 @@ intents.message_content = True
 bot = commands.Bot(command_prefix="!", intents=intents)
 
 # -------------------------------------------------------------
-# DATABASE COMPLETO CON 360 MISSIONI (60 PER RUOLO)
+# DATABASE COMPLETO CON 360 MISSIONI SETTIMANALI (60 PER RUOLO)
 # -------------------------------------------------------------
 MISSIONI_SETTIMANALI = {
     "🌾 Farmer": [
@@ -70,7 +70,7 @@ MISSIONI_SETTIMANALI = {
         "**La Voliera**: Trova e porta alla base 3 pappagalli di colori differenti.",
         "**I Piccoli Allay**: Trova e porta alla base 2 Allay per aiutarti nella raccolta delle colture.",
         "**Cactus e Tinto**: Raccogli 10 stack di cactus e fondili per ottenere tintura verde.",
-        "**Ninfee e Decorazioni**: Raccogli 5 stack di ninfee dai biomi di palude per i laghetti comunitarii.",
+        "**Ninfee e Decorazioni**: Raccogli 5 stack di ninfee dai biomi di palude per i laghetti comunitarie.",
         "**Imperatore del Miele**: Accumula 5 stack di favi e 5 stack di blocchi di miele.",
         "**L'Inchiostro del Mare**: Raccogli 5 stack di sacche d'inchiostro standard e 2 stack di inchiostro lucente.",
         "**Panetteria di Bordo**: Sforna 10 stack di pane fresco da lasciare nelle casse di benvenuto.",
@@ -153,7 +153,7 @@ MISSIONI_SETTIMANALI = {
         "**Arena PvP**: Costruisci un piccolo ring circondato da staccionate per i duelli amichevoli.",
         "**Piccolo Teatro**: Progetta un palco in legno con sipario in lana rossa e sedute.",
         "**Faro Subacqueo**: Costruisci una cupola illuminata sotto il livello del mare con prismather.",
-        "**Rovise Decorative**: Crea una struttura in rovina ricoperta di rampicanti per dare atmosfera.",
+        "**Rovine Decorative**: Crea una struttura in rovina ricoperta di rampicanti per dare atmosfera.",
         "**Labirinto di Siepi**: Pianta e pota un piccolo labirinto in foglie vicino alla base.",
         "**Osservatorio**: Costruisci una cupola in vetro sulla montagna per l'osservazione delle stelle.",
         "**Ponte Levatoio**: Progetta la facciata di un castello con un ponte in legno sollevato.",
@@ -414,23 +414,23 @@ MISSIONI_SETTIMANALI = {
 }
 
 # -------------------------------------------------------------
-# DATABASE 14 MISSIONI MENSILE
+# DATABASE MISSIONI MENSILE (1 SOLA ESTRATTA A CASO AL MESE)
 # -------------------------------------------------------------
 MISSIONI_MENSILE_LISTA = [
-    "🐉 **Il Cacciatore di Draghi:** Sconfiggi l'Ender Dragon 3 volte.",
-    "⛏️ **Lo Scavatore Folle:** Raccogli 10.000 blocchi di Pietra o Ardesia Profonda.",
-    "💎 **Febbre del Diamante:** Trova e mina 100 minerali di Diamante grezzo.",
-    "🌾 **L'Agricoltore Supremo:** Raccogli 5.000 unità di Grano, Carote o Patate.",
-    "🧟 **Difensore del Reame:** Uccidi 500 mob ostili (Zombie, Scheletri, Creeper).",
-    "🗺️ **L'Esploratore:** Trova e saccheggia un'Antica Città (Ancient City).",
-    "🤝 **Il Mercante:** Completa 100 scambi con i Villager.",
-    "🔥 **Maestro del Nether:** Ottieni 50 frammenti di Netherite.",
-    "🎣 **Pesca Miracolosa:** Pesca 200 oggetti (Pesci, Libri, Tesori).",
-    "🐄 **L'Allevatore:** Fai riprodurre 150 animali nella tua farm.",
-    "🏰 **L'Architetto:** Costruisci una struttura usando almeno 3.000 blocchi.",
-    "✨ **Il Collezionista:** Crafta un Faro (Beacon) e portalo al livello massimo.",
-    "🐸 **Amico degli Animali:** Cattura 5 Axolotl di colori diversi.",
-    "💀 **Cacciatore di Teste:** Ottieni 3 Teste di Wither Scheletro."
+    "🐉 **Il Cacciatore di Draghi:** Sconfiggete l'Ender Dragon 3 volte.",
+    "⛏️ **Lo Scavatore Folle:** Raccogliete 10.000 blocchi di Pietra o Ardesia Profonda.",
+    "💎 **Febbre del Diamante:** Trovate e minate 100 minerali di Diamante grezzo.",
+    "🌾 **L'Agricoltore Supremo:** Raccogliete 5.000 unità di Grano, Carote o Patate.",
+    "🧟 **Difensore del Reame:** Uccidete 500 mob ostili (Zombie, Scheletri, Creeper).",
+    "🗺️ **L'Esploratore:** Trovate e saccheggiate un'Antica Città (Ancient City), sconfiggete il Warden e razziate una Trial Chamber.",
+    "🤝 **Il Mercante:** Completate 100 scambi con i Villager.",
+    "🔥 **Maestro del Nether:** Ottenete 50 frammenti di Netherite.",
+    "🎣 **Pesca Miracolosa:** Pescate 200 oggetti (Pesci, Libri, Tesori).",
+    "🐄 **L'Allevatore:** Fate riprodurre 150 animali nella tua farm.",
+    "🏰 **L'Architetto:** Costruite una struttura usando almeno 3.000 blocchi.",
+    "✨ **Il Collezionista:** Craftate un Faro (Beacon) e portalo al livello massimo.",
+    "🐸 **Amico degli Animali:** Catturate 5 Axolotl di colori diversi.",
+    "💀 **Cacciatore di Teste:** Ottenete 3 Cuori di Wither."
 ]
 
 # --- GESTIONE MEMORIA ANTI-RIPETIZIONE ---
@@ -460,6 +460,8 @@ def estrai_missione(ruolo):
     salva_usate(usate)
     return scelta
 
+# --- FUNZIONI DI GENERAZIONE EMBED ---
+
 async def genera_e_invia_embed():
     channel = bot.get_channel(CHANNEL_ID)
     if not channel:
@@ -468,7 +470,7 @@ async def genera_e_invia_embed():
         
     embed = discord.Embed(
         title="📜 MISSIONI SETTIMANALI PER RUOLO",
-        description="Ecco le nuove sfide per i prossimi **7 giorni**!\nNessuna ripetizione fino a completamento del catalogo.",
+        description="Ecco le nuove sfide per i prossimi **7 giorni**! Per chi ce la fa... 50 SCUDI!!! Ma solo i migliori possono farlo\nNessuna ripetizione fino a completamento del catalogo.",
         color=discord.Color.gold()
     )
     
@@ -480,27 +482,26 @@ async def genera_e_invia_embed():
     await channel.send(embed=embed)
     print("✅ Messaggio delle missioni settimanali inviato con successo su Discord!")
 
-async def genera_e_invia_mensili():
-    channel = bot.get_channel(CHANNEL_ID)
+async def genera_e_invia_mensili(target_channel=None):
+    channel = target_channel or bot.get_channel(CHANNEL_ID)
     if not channel:
-        print(f"❌ Errore: Canale con ID {CHANNEL_ID} non trovato.")
+        print(f"❌ Errore: Canale non trovato.")
         return
 
+    # Estrae UNA SOLA missione mensile casuale dalla lista
+    sfida_mensile = random.choice(MISSIONI_MENSILE_LISTA)
+
     embed = discord.Embed(
-        title="🏆 NUOVE MISSIONI MENSILE 🏆",
-        description="Avete un intero mese per completare queste 14 sfide epiche. Buona fortuna!",
+        title="🏆 SFIDA MENSILE COMUNITARIA 🏆",
+        description="Ecco la grande sfida per l'intero server per questo mese! **Lavorate insieme per completarla!** Se lo farete... **100 scudi a testa** come ricompensa",
         color=discord.Color.purple()
     )
 
-    testo = ""
-    for i, m in enumerate(MISSIONI_MENSILE_LISTA, 1):
-        testo += f"**{i}.** {m}\n\n"
-
-    embed.add_field(name="Le 14 Sfide del Mese:", value=testo, inline=False)
-    embed.set_footer(text="Missioni valide fino alla fine del mese corrente!")
+    embed.add_field(name="La Missione del Mese:", value=sfida_mensile, inline=False)
+    embed.set_footer(text="Avete un intero mese di tempo. Buona collaborazione!")
 
     await channel.send(embed=embed)
-    print("✅ Messaggio delle missioni mensili inviato con successo su Discord!")
+    print("✅ Messaggio della missione mensile inviato con successo su Discord!")
 
 # --- TIMER AUTOMATICO GIORNALIERO (8:00 UTC = 10:00 Italiana) ---
 ORARIO_INVIO = datetime.time(hour=8, minute=0, tzinfo=datetime.timezone.utc)
@@ -511,12 +512,12 @@ async def timer_automatico_giornaliero():
     
     # 1. Se è Lunedì (0 = Lunedì), invia le missioni settimanali
     if oggi.weekday() == 0:
-        print("📅 È Lunedì! Inviol le missioni settimanali...")
+        print("📅 È Lunedì! Invio le missioni settimanali...")
         await genera_e_invia_embed()
 
-    # 2. Se è il 1° giorno del mese, invia le missioni mensili
+    # 2. Se è il 1° giorno del mese, invia LA missione mensile
     if oggi.day == 1:
-        print("📅 È il primo del mese! Inviol le missioni mensili...")
+        print("📅 È il primo del mese! Invio la missione mensile...")
         await genera_e_invia_mensili()
 
 # --- EVENTI E COMANDI DISCORD ---
@@ -527,38 +528,14 @@ async def on_ready():
         timer_automatico_giornaliero.start()
         print("⏱️ Timer automatico per invio missioni avviato con successo!")
 
-# Comando manuale per forzare l'invio delle settimanali nel canale dove viene digitato
+# Comando manuale per le settimanali
 @bot.command(name="nuovemissioni")
 async def cmd_nuove_missioni(ctx):
-    embed = discord.Embed(
-        title="📜 MISSIONI SETTIMANALI PER RUOLO",
-        description="Ecco le nuove sfide per i prossimi **7 giorni**!\nNessuna ripetizione fino a completamento del catalogo.",
-        color=discord.Color.gold()
-    )
-    
-    for ruolo in MISSIONI_SETTIMANALI.keys():
-        missione = estrai_missione(ruolo)
-        embed.add_field(name=f"**Ruolo: {ruolo}**", value=missione, inline=False)
-        
-    embed.set_footer(text="Buona fortuna a tutti i giocatori!")
-    await ctx.send(embed=embed)
+    await genera_e_invia_embed()
 
-# Comando manuale per forzare l'invio delle mensili nel canale dove viene digitato
+# Comando manuale per estrarre 1 missione mensile
 @bot.command(name="missionimensili")
 async def cmd_missioni_mensili(ctx):
-    embed = discord.Embed(
-        title="🏆 NUOVE MISSIONI MENSILE 🏆",
-        description="Avete un intero mese per completare queste 14 sfide epiche. Buona fortuna!",
-        color=discord.Color.purple()
-    )
-
-    testo = ""
-    for i, m in enumerate(MISSIONI_MENSILE_LISTA, 1):
-        testo += f"**{i}.** {m}\n\n"
-
-    embed.add_field(name="Le 14 Sfide del Mese:", value=testo, inline=False)
-    embed.set_footer(text="Missioni valide fino alla fine del mese corrente!")
-
-    await ctx.send(embed=embed)
+    await genera_e_invia_mensili(target_channel=ctx.channel)
 
 bot.run(TOKEN)
