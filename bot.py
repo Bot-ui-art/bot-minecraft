@@ -527,16 +527,38 @@ async def on_ready():
         timer_automatico_giornaliero.start()
         print("⏱️ Timer automatico per invio missioni avviato con successo!")
 
-# Comando manuale per forzare l'invio delle settimanali
+# Comando manuale per forzare l'invio delle settimanali nel canale dove viene digitato
 @bot.command(name="nuovemissioni")
 async def cmd_nuove_missioni(ctx):
-    await genera_e_invia_embed()
-    await ctx.send("📜 Nuove missioni settimanali generate e inviate nel canale!")
+    embed = discord.Embed(
+        title="📜 MISSIONI SETTIMANALI PER RUOLO",
+        description="Ecco le nuove sfide per i prossimi **7 giorni**!\nNessuna ripetizione fino a completamento del catalogo.",
+        color=discord.Color.gold()
+    )
+    
+    for ruolo in MISSIONI_SETTIMANALI.keys():
+        missione = estrai_missione(ruolo)
+        embed.add_field(name=f"**Ruolo: {ruolo}**", value=missione, inline=False)
+        
+    embed.set_footer(text="Buona fortuna a tutti i giocatori!")
+    await ctx.send(embed=embed)
 
-# Comando manuale per forzare l'invio delle mensili
+# Comando manuale per forzare l'invio delle mensili nel canale dove viene digitato
 @bot.command(name="missionimensili")
 async def cmd_missioni_mensili(ctx):
-    await genera_e_invia_mensili()
-    await ctx.send("🏆 Nuove missioni mensili generate e inviate nel canale!")
+    embed = discord.Embed(
+        title="🏆 NUOVE MISSIONI MENSILE 🏆",
+        description="Avete un intero mese per completare queste 14 sfide epiche. Buona fortuna!",
+        color=discord.Color.purple()
+    )
+
+    testo = ""
+    for i, m in enumerate(MISSIONI_MENSILE_LISTA, 1):
+        testo += f"**{i}.** {m}\n\n"
+
+    embed.add_field(name="Le 14 Sfide del Mese:", value=testo, inline=False)
+    embed.set_footer(text="Missioni valide fino alla fine del mese corrente!")
+
+    await ctx.send(embed=embed)
 
 bot.run(TOKEN)
