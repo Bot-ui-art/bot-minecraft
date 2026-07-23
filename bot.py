@@ -4,6 +4,7 @@ import random
 import json
 import os
 import threading
+import datetime
 from http.server import HTTPServer, BaseHTTPRequestHandler
 
 # --- SERVER WEB PER KEEP-ALIVE SU RENDER ---
@@ -28,7 +29,7 @@ def run_http_server():
 threading.Thread(target=run_http_server, daemon=True).start()
 
 # --- CONFIGURAZIONE DISCORD ---
-TOKEN = TOKEN = os.environ.get("DISCORD_TOKEN")
+TOKEN = os.environ.get("DISCORD_TOKEN")
 CHANNEL_ID = 1529463418745258145
 intents = discord.Intents.default()
 intents.message_content = True
@@ -412,6 +413,26 @@ MISSIONI_SETTIMANALI = {
     ]
 }
 
+# -------------------------------------------------------------
+# DATABASE 14 MISSIONI MENSILE
+# -------------------------------------------------------------
+MISSIONI_MENSILE_LISTA = [
+    "🐉 **Il Cacciatore di Draghi:** Sconfiggi l'Ender Dragon 3 volte.",
+    "⛏️ **Lo Scavatore Folle:** Raccogli 10.000 blocchi di Pietra o Ardesia Profonda.",
+    "💎 **Febbre del Diamante:** Trova e mina 100 minerali di Diamante grezzo.",
+    "🌾 **L'Agricoltore Supremo:** Raccogli 5.000 unità di Grano, Carote o Patate.",
+    "🧟 **Difensore del Reame:** Uccidi 500 mob ostili (Zombie, Scheletri, Creeper).",
+    "🗺️ **L'Esploratore:** Trova e saccheggia un'Antica Città (Ancient City).",
+    "🤝 **Il Mercante:** Completa 100 scambi con i Villager.",
+    "🔥 **Maestro del Nether:** Ottieni 50 frammenti di Netherite.",
+    "🎣 **Pesca Miracolosa:** Pesca 200 oggetti (Pesci, Libri, Tesori).",
+    "🐄 **L'Allevatore:** Fai riprodurre 150 animali nella tua farm.",
+    "🏰 **L'Architetto:** Costruisci una struttura usando almeno 3.000 blocchi.",
+    "✨ **Il Collezionista:** Crafta un Faro (Beacon) e portalo al livello massimo.",
+    "🐸 **Amico degli Animali:** Cattura 5 Axolotl di colori diversi.",
+    "💀 **Cacciatore di Teste:** Ottieni 3 Teste di Wither Scheletro."
+]
+
 # --- GESTIONE MEMORIA ANTI-RIPETIZIONE ---
 FILE_MEMORIA = "missioni_usate.json"
 
@@ -447,7 +468,7 @@ async def genera_e_invia_embed():
         
     embed = discord.Embed(
         title="📜 MISSIONI SETTIMANALI PER RUOLO",
-        description="Ecco le nuove sfide per i prossimi **7 giorni**! Nessuna ripetizione fino a completamento del catalogo.",
+        description="Ecco le nuove sfide per i prossimi **7 giorni**!\nNessuna ripetizione fino a completamento del catalogo.",
         color=discord.Color.gold()
     )
     
@@ -457,23 +478,65 @@ async def genera_e_invia_embed():
         
     embed.set_footer(text="Buona fortuna a tutti i giocatori!")
     await channel.send(embed=embed)
-    print("✅ Messaggio delle missioni inviato con successo su Discord!")
+    print("✅ Messaggio delle missioni settimanali inviato con successo su Discord!")
+
+async def genera_e_invia_mensili():
+    channel = bot.get_channel(CHANNEL_ID)
+    if not channel:
+        print(f"❌ Errore: Canale con ID {CHANNEL_ID} non trovato.")
+        return
+
+    embed = discord.Embed(
+        title="🏆 NUOVE MISSIONI MENSILE 🏆",
+        description="Avete un intero mese per completare queste 14 sfide epiche. Buona fortuna!",
+        color=discord.Color.purple()
+    )
+
+    testo = ""
+    for i, m in enumerate(MISSIONI_MENSILE_LISTA, 1):
+        testo += f"**{i}.** {m}\n\n"
+
+    embed.add_field(name="Le 14 Sfide del Mese:", value=testo, inline=False)
+    embed.set_footer(text="Missioni valide fino alla fine del mese corrente!")
+
+    await channel.send(embed=embed)
+    print("✅ Messaggio delle missioni mensili inviato con successo su Discord!")
+
+# --- TIMER AUTOMATICO GIORNALIERO (8:00 UTC = 10:00 Italiana) ---
+ORARIO_INVIO = datetime.time(hour=8, minute=0, tzinfo=datetime.timezone.utc)
+
+@tasks.loop(time=ORARIO_INVIO)
+async def timer_automatico_giornaliero():
+    oggi = datetime.datetime.now(datetime.timezone.utc)
+    
+    # 1. Se è Lunedì (0 = Lunedì), invia le missioni settimanali
+    if oggi.weekday() == 0:
+        print("📅 È Lunedì! Inviol le missioni settimanali...")
+        await genera_e_invia_embed()
+
+    # 2. Se è il 1° giorno del mese, invia le missioni mensili
+    if oggi.day == 1:
+        print("📅 È il primo del mese! Inviol le missioni mensili...")
+        await genera_e_invia_mensili()
 
 # --- EVENTI E COMANDI DISCORD ---
 @bot.event
 async def on_ready():
     print(f'🤖 Bot connesso con successo come: {bot.user}')
-    if not invia_settimanale.is_running():
-        invia_settimanale.start()
+    if not timer_automatico_giornaliero.is_running():
+        timer_automatico_giornaliero.start()
+        print("⏱️ Timer automatico per invio missioni avviato con successo!")
 
-@tasks.loop(hours=168)
-async def invia_settimanale():
-    await genera_e_invia_embed()
-
-# Comando manuale per forzare l'invio su Discord quando vuoi
+# Comando manuale per forzare l'invio delle settimanali
 @bot.command(name="nuovemissioni")
 async def cmd_nuove_missioni(ctx):
     await genera_e_invia_embed()
-    await ctx.send("📜 Nuove missioni generate e inviate nel canale!")
+    await ctx.send("📜 Nuove missioni settimanali generate e inviate nel canale!")
+
+# Comando manuale per forzare l'invio delle mensili
+@bot.command(name="missionimensili")
+async def cmd_missioni_mensili(ctx):
+    await genera_e_invia_mensili()
+    await ctx.send("🏆 Nuove missioni mensili generate e inviate nel canale!")
 
 bot.run(TOKEN)
